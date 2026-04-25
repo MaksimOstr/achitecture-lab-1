@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: mywebapp-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: mywebapp
+      POSTGRES_USER: mywebapp
+      POSTGRES_PASSWORD: mywebapp
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mywebapp -d mywebapp"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres-data:
