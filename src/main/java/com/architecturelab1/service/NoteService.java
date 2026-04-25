@@ -1,5 +1,9 @@
-package com.architecturelab1.notes;
+package com.architecturelab1.service;
 
+import com.architecturelab1.exception.NoteNotFoundException;
+import com.architecturelab1.model.Note;
+import com.architecturelab1.model.NoteListItem;
+import com.architecturelab1.repository.NoteRepository;
 import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;

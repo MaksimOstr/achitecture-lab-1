@@ -1,8 +1,8 @@
-package com.architecturelab1.health;
+package com.architecturelab1.controller;
 
 import javax.sql.DataSource;
-import org.springframework.http.MediaType;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.web.bind.annotation.GetMapping;

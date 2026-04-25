@@ -1,6 +1,11 @@
-package com.architecturelab1.notes;
+package com.architecturelab1.controller;
 
-import com.architecturelab1.html.HtmlResponseBuilder;
+import com.architecturelab1.model.CreateNoteForm;
+import com.architecturelab1.model.CreateNoteRequest;
+import com.architecturelab1.model.Note;
+import com.architecturelab1.model.NoteListItem;
+import com.architecturelab1.service.HtmlResponseBuilder;
+import com.architecturelab1.service.NoteService;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,7 +25,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

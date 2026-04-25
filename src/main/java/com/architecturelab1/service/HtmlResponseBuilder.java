@@ -1,7 +1,7 @@
-package com.architecturelab1.html;
+package com.architecturelab1.service;
 
-import com.architecturelab1.notes.Note;
-import com.architecturelab1.notes.NoteListItem;
+import com.architecturelab1.model.Note;
+import com.architecturelab1.model.NoteListItem;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
-package com.architecturelab1.web;
+package com.architecturelab1.controller;
 
-import com.architecturelab1.html.HtmlResponseBuilder;
+import com.architecturelab1.service.HtmlResponseBuilder;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

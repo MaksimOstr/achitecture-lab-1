@@ -1,4 +1,4 @@
-package com.architecturelab1.notes;
+package com.architecturelab1.exception;
 
 public class NoteNotFoundException extends RuntimeException {
 

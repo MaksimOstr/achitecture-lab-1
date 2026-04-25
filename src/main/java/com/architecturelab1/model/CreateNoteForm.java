@@ -1,4 +1,4 @@
-package com.architecturelab1.notes;
+package com.architecturelab1.model;
 
 import jakarta.validation.constraints.NotBlank;
 

@@ -1,6 +1,5 @@
-package com.architecturelab1.web;
+package com.architecturelab1.exception;
 
-import com.architecturelab1.notes.NoteNotFoundException;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
