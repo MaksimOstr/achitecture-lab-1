@@ -1,3 +1,6 @@
 spring:
   application:
-    name: architecture-lab1
+    name: mywebapp
+server:
+  address: 127.0.0.1
+  port: 5200
