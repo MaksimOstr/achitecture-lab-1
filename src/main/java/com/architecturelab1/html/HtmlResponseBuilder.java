@@ -38,10 +38,10 @@ public class HtmlResponseBuilder {
     }
 
     public String renderNote(Note note) {
-        return "<html><head><title>Note</title></head><body><h1>Note</h1><dl><dt>id</dt><dd>" + note.id()
-            + "</dd><dt>title</dt><dd>" + escape(note.title())
-            + "</dd><dt>created_at</dt><dd>" + FORMATTER.format(note.createdAt())
-            + "</dd><dt>content</dt><dd>" + escape(note.content())
+        return "<html><head><title>Note</title></head><body><h1>Note</h1><dl><dt>id</dt><dd>" + note.getId()
+            + "</dd><dt>title</dt><dd>" + escape(note.getTitle())
+            + "</dd><dt>created_at</dt><dd>" + FORMATTER.format(note.getCreatedAt())
+            + "</dd><dt>content</dt><dd>" + escape(note.getContent())
             + "</dd></dl></body></html>";
     }
 

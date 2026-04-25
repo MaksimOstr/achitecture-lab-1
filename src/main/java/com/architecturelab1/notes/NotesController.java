@@ -49,24 +49,24 @@ public class NotesController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Note> createJson(@Valid @RequestBody CreateNoteRequest request) {
         Note note = noteService.createNote(request.title(), request.content());
-        return ResponseEntity.created(URI.create("/notes/" + note.id())).body(note);
+        return ResponseEntity.created(URI.create("/notes/" + note.getId())).body(note);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_HTML_VALUE)
     public ResponseEntity<String> createJsonHtml(@Valid @RequestBody CreateNoteRequest request) {
         Note note = noteService.createNote(request.title(), request.content());
-        return ResponseEntity.created(URI.create("/notes/" + note.id())).body(htmlResponseBuilder.renderNote(note));
+        return ResponseEntity.created(URI.create("/notes/" + note.getId())).body(htmlResponseBuilder.renderNote(note));
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Note> createFormJson(@Valid @ModelAttribute CreateNoteForm form) {
         Note note = noteService.createNote(form.title(), form.content());
-        return ResponseEntity.created(URI.create("/notes/" + note.id())).body(note);
+        return ResponseEntity.created(URI.create("/notes/" + note.getId())).body(note);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.TEXT_HTML_VALUE)
     public ResponseEntity<String> createFormHtml(@Valid @ModelAttribute CreateNoteForm form) {
         Note note = noteService.createNote(form.title(), form.content());
-        return ResponseEntity.created(URI.create("/notes/" + note.id())).body(htmlResponseBuilder.renderNote(note));
+        return ResponseEntity.created(URI.create("/notes/" + note.getId())).body(htmlResponseBuilder.renderNote(note));
     }
 }
