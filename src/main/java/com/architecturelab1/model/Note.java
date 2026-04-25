@@ -9,9 +9,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "notes")
+@Getter
+@Setter
 public class Note {
 
     @Id
@@ -44,21 +48,5 @@ public class Note {
         if (createdAt == null) {
             createdAt = OffsetDateTime.now();
         }
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
     }
 }

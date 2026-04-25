@@ -31,7 +31,7 @@ public class HtmlResponseBuilder {
         StringBuilder builder = new StringBuilder();
         builder.append("<html><head><title>Notes</title></head><body><h1>Notes</h1><table border=\"1\"><thead><tr><th>id</th><th>title</th></tr></thead><tbody>");
         for (NoteListItem note : notes) {
-            builder.append("<tr><td>").append(note.id()).append("</td><td>").append(escape(note.title())).append("</td></tr>");
+            builder.append("<tr><td>").append(note.getId()).append("</td><td>").append(escape(note.getTitle())).append("</td></tr>");
         }
         builder.append("</tbody></table></body></html>");
         return builder.toString();

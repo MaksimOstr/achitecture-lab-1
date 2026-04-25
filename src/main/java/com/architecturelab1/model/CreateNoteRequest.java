@@ -2,11 +2,22 @@ package com.architecturelab1.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-public record CreateNoteRequest(
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class CreateNoteRequest {
+
     @Schema(description = "Short note title", example = "Lab note")
-    @NotBlank String title,
+    @NotBlank
+    private String title;
+
     @Schema(description = "Full note text", example = "Implementation details")
-    @NotBlank String content
-) {
+    @NotBlank
+    private String content;
 }

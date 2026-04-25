@@ -1,13 +1,19 @@
 package com.architecturelab1.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-public record NoteListItem(
+@Getter
+@AllArgsConstructor
+public class NoteListItem {
+
     @Schema(description = "Note id", example = "1")
-    long id,
+    private final long id;
+
     @Schema(description = "Short note title", example = "Lab note")
-    String title
-) {
+    private final String title;
+
     public static NoteListItem from(Note note) {
         return new NoteListItem(note.getId(), note.getTitle());
     }

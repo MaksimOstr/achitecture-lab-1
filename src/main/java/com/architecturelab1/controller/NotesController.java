@@ -108,28 +108,28 @@ public class NotesController {
     })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Note> createJson(@Valid @org.springframework.web.bind.annotation.RequestBody CreateNoteRequest request) {
-        Note note = noteService.createNote(request.title(), request.content());
+        Note note = noteService.createNote(request.getTitle(), request.getContent());
         return ResponseEntity.created(URI.create("/notes/" + note.getId())).body(note);
     }
 
     @Hidden
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_HTML_VALUE)
     public ResponseEntity<String> createJsonHtml(@Valid @org.springframework.web.bind.annotation.RequestBody CreateNoteRequest request) {
-        Note note = noteService.createNote(request.title(), request.content());
+        Note note = noteService.createNote(request.getTitle(), request.getContent());
         return ResponseEntity.created(URI.create("/notes/" + note.getId())).body(htmlResponseBuilder.renderNote(note));
     }
 
     @Hidden
     @PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Note> createFormJson(@Valid @ModelAttribute CreateNoteForm form) {
-        Note note = noteService.createNote(form.title(), form.content());
+        Note note = noteService.createNote(form.getTitle(), form.getContent());
         return ResponseEntity.created(URI.create("/notes/" + note.getId())).body(note);
     }
 
     @Hidden
     @PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.TEXT_HTML_VALUE)
     public ResponseEntity<String> createFormHtml(@Valid @ModelAttribute CreateNoteForm form) {
-        Note note = noteService.createNote(form.title(), form.content());
+        Note note = noteService.createNote(form.getTitle(), form.getContent());
         return ResponseEntity.created(URI.create("/notes/" + note.getId())).body(htmlResponseBuilder.renderNote(note));
     }
 }
