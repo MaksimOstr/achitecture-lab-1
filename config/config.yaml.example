@@ -1,0 +1,9 @@
+server:
+  address: 127.0.0.1
+  port: 5200
+
+spring:
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5432/mywebapp
+    username: mywebapp
+    password: mywebapp
