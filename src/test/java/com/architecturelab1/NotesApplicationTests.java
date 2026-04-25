@@ -97,4 +97,21 @@ class NotesApplicationTests {
             .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
             .andExpect(content().string(org.hamcrest.Matchers.containsString("<table")));
     }
+
+    @Test
+    void swaggerDocsExposeNotesEndpoints() throws Exception {
+        mockMvc.perform(get("/v3/api-docs").accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.paths['/notes'].get.summary").value("List notes"))
+            .andExpect(jsonPath("$.paths['/notes'].post.summary").value("Create note"))
+            .andExpect(jsonPath("$.paths['/notes/{id}'].get.summary").value("Get note by id"))
+            .andExpect(jsonPath("$.paths['/notes'].get.responses['200'].content['application/json']").exists())
+            .andExpect(jsonPath("$.paths['/notes'].get.responses['200'].content['text/html']").exists())
+            .andExpect(jsonPath("$.paths['/notes'].post.requestBody.content['application/json']").exists())
+            .andExpect(jsonPath("$.paths['/notes'].post.requestBody.content['application/x-www-form-urlencoded']").exists())
+            .andExpect(jsonPath("$.paths['/notes'].post.responses['201'].content['application/json']").exists())
+            .andExpect(jsonPath("$.paths['/notes'].post.responses['201'].content['text/html']").exists())
+            .andExpect(jsonPath("$.paths['/notes/{id}'].get.responses['200'].content['application/json']").exists())
+            .andExpect(jsonPath("$.paths['/notes/{id}'].get.responses['200'].content['text/html']").exists());
+    }
 }

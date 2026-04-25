@@ -1,5 +1,6 @@
 package com.architecturelab1.notes;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,15 +16,19 @@ public class Note {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Note id", example = "1")
     private Long id;
 
     @Column(nullable = false)
+    @Schema(description = "Short note title", example = "Lab note")
     private String title;
 
     @Column(nullable = false, columnDefinition = "TEXT")
+    @Schema(description = "Full note text", example = "Implementation details")
     private String content;
 
     @Column(name = "created_at", nullable = false)
+    @Schema(description = "Creation timestamp", example = "2026-04-26T14:30:00+03:00")
     private OffsetDateTime createdAt;
 
     protected Note() {
