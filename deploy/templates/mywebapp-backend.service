@@ -1,0 +1,22 @@
+[Unit]
+Description=mywebapp backend
+After=network-online.target postgresql.service
+Wants=network-online.target postgresql.service
+
+[Service]
+Type=simple
+User=mywebapp
+Group=mywebapp
+WorkingDirectory=/opt/mywebapp/current
+ExecStartPre=/opt/mywebapp/bin/migrate.sh
+ExecStart=/usr/bin/java -jar /opt/mywebapp/current/mywebapp.jar --spring.config.additional-location=file:/etc/mywebapp/config.yaml
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/log/mywebapp
+
+[Install]
+WantedBy=multi-user.target

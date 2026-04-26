@@ -1,0 +1,9 @@
+server:
+  address: 127.0.0.1
+  port: 15200
+
+spring:
+  datasource:
+    url: jdbc:postgresql://__DB_HOST__:__DB_PORT__/mywebapp
+    username: mywebapp
+    password: __DB_PASSWORD__

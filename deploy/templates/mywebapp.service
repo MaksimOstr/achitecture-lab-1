@@ -1,0 +1,13 @@
+[Unit]
+Description=mywebapp socket proxy
+After=mywebapp-backend.service
+Wants=mywebapp-backend.service
+Requires=mywebapp.socket
+
+[Service]
+ExecStartPre=/usr/bin/bash -lc 'for i in {1..30}; do nc -z 127.0.0.1 15200 && exit 0; sleep 1; done; exit 1'
+ExecStart=/lib/systemd/systemd-socket-proxyd 127.0.0.1:15200
+NonBlocking=true
+
+[Install]
+Also=mywebapp.socket

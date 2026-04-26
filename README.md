@@ -1,132 +1,406 @@
 # mywebapp
 
-`N = 21`
+## Documentation
 
-`V2 = (21 % 2) + 1 = 2`
+This repository contains the implementation and documentation for the laboratory assignment on automated deployment of a web application to Ubuntu/WSL.
 
-`V3 = (21 % 3) + 1 = 1`
+Additional deployment details:
 
-`V5 = (21 % 5) + 1 = 2`
+- [docs/deployment.md](C:/Users/Admin/Desktop/architecture-lab1/docs/deployment.md)
 
-Variant:
+## Individual Assignment Variant
 
-- Application: Notes Service
-- Configuration mode: config file at `/etc/mywebapp/config.yaml`
-- Database: PostgreSQL
-- Application port: `5200`
+Initial value:
 
-## Purpose
+- `N = 21`
 
-`mywebapp` is a simple notes service. It stores notes in PostgreSQL and serves the business API in either `application/json` or `text/html` depending on the `Accept` header.
+Calculations:
 
-## Requirements
+- `V2 = (21 % 2) + 1 = 2`
+- `V3 = (21 % 3) + 1 = 1`
+- `V5 = (21 % 5) + 1 = 2`
 
-- Java 21
-- Docker Desktop or local PostgreSQL
+Individual assignment:
 
-## Local configuration
+- application: `Notes Service`
+- configuration mode: external file `/etc/mywebapp/config.yaml`
+- database: `PostgreSQL`
+- application port by variant: `5200`
 
-The application loads Spring Boot configuration from the repository defaults and additionally from `/etc/mywebapp/config.yaml`.
+## Application Purpose
 
-Example external config:
+`mywebapp` is a simple notes web application. It stores data in `PostgreSQL` and returns responses in either `application/json` or `text/html` depending on the `Accept` header.
 
-```yaml
-server:
-  address: 127.0.0.1
-  port: 5200
+Main features:
 
-spring:
-  datasource:
-    url: jdbc:postgresql://127.0.0.1:5432/mywebapp
-    username: mywebapp
-    password: mywebapp
-```
+- list notes
+- create a note
+- get a single note by `id`
+- check application health through health endpoints
 
-A copy is included at [config.yaml.example](C:/Users/Admin/Desktop/architecture-lab1/config/config.yaml.example).
+Note fields:
 
-## Run
+- `id`
+- `title`
+- `content`
+- `created_at`
 
-Start PostgreSQL with Docker Compose:
+## Web Application Documentation
+
+Implemented endpoints:
+
+- `GET /`
+- `GET /health/alive`
+- `GET /health/ready`
+- `GET /notes`
+- `POST /notes`
+- `GET /notes/{id}`
+
+OpenAPI/Swagger:
+
+- Swagger UI: `http://127.0.0.1:5200/swagger-ui.html`
+- OpenAPI JSON: `http://127.0.0.1:5200/v3/api-docs`
+
+Database migration:
+
+- [src/main/resources/db/migration/V1__create_notes.sql](C:/Users/Admin/Desktop/architecture-lab1/src/main/resources/db/migration/V1__create_notes.sql)
+
+External configuration for the deployed system:
+
+- `/etc/mywebapp/config.yaml`
+- template: [deploy/templates/config.yaml](C:/Users/Admin/Desktop/architecture-lab1/deploy/templates/config.yaml)
+
+## Development, Testing, and Runtime Environment Setup
+
+Requirements:
+
+- `Java 21`
+- `PostgreSQL`
+- a Unix-like environment to run `./gradlew`
+
+For quick local PostgreSQL startup on Windows, the repository includes:
+
+- [docker-compose.yml](C:/Users/Admin/Desktop/architecture-lab1/docker-compose.yml)
+
+Start the local database:
 
 ```powershell
 docker compose up -d
 ```
 
-Then run:
+Build the application:
 
-```powershell
-.\gradlew.bat bootRun
+```bash
+./gradlew bootJar
 ```
 
-The default bind address is `127.0.0.1` and the default port is `5200`.
+Run tests:
 
-Swagger UI is available at `http://127.0.0.1:5200/swagger-ui.html`.
-
-OpenAPI JSON is available at `http://127.0.0.1:5200/v3/api-docs`.
-
-## Migration
-
-The schema is managed by Flyway. SQL migration files are in `src/main/resources/db/migration`.
-
-Build the jar:
-
-```powershell
-.\gradlew.bat bootJar
+```bash
+./gradlew test
 ```
 
-Run the migration-only command:
+Run the application locally:
 
-```powershell
-.\scripts\migrate.ps1
+```bash
+./gradlew bootRun
 ```
 
-The default Docker Compose database already matches the application defaults:
+Local application address:
 
-- database: `mywebapp`
-- username: `mywebapp`
-- password: `mywebapp`
-- host: `127.0.0.1`
-- port: `5432`
+- `http://127.0.0.1:5200`
 
-## API
+## How To Run The Developed Web Application
 
-Root endpoint:
+For local execution:
 
-- `GET /` returns an HTML page listing the business endpoints.
+1. Start PostgreSQL.
+2. Make sure the application configuration is available.
+3. Run:
 
-Health endpoints:
+```bash
+./gradlew bootRun
+```
 
-- `GET /health/alive` returns `200 OK` with body `OK`
-- `GET /health/ready` returns `200 OK` with body `OK` when PostgreSQL is reachable, otherwise `500`
+After startup, the following URLs should be available:
 
-Business endpoints:
+- `http://127.0.0.1:5200/`
+- `http://127.0.0.1:5200/swagger-ui.html`
+- `http://127.0.0.1:5200/v3/api-docs`
 
-- `GET /notes`
-- `POST /notes`
-- `GET /notes/{id}`
+## API Endpoint Documentation
 
-`GET /notes`
+### `GET /`
 
-- `Accept: application/json` returns a JSON array of notes with `id` and `title`
-- `Accept: text/html` returns an HTML table with `id` and `title`
+- response type: `text/html`
+- returns an HTML page with the list of main endpoints
 
-`POST /notes`
+### `GET /health/alive`
 
-- Accepts `application/json` body with `title` and `content`
-- Accepts `application/x-www-form-urlencoded` body with `title` and `content`
-- `Accept: application/json` returns the created note as JSON
-- `Accept: text/html` returns the created note as HTML
+- purpose: checks that the application process is running
+- response: `200 OK`
+- body: `OK`
+
+### `GET /health/ready`
+
+- purpose: checks that the application is ready to work with the database
+- response: `200 OK` when the database connection is available
+- response: `500` when the application is not ready
+
+### `GET /notes`
+
+- supports `Accept: application/json`
+- supports `Accept: text/html`
+- for `application/json`, returns an array of objects with `id` and `title`
+- for `text/html`, returns an HTML table with notes
 
 Example:
 
-```powershell
-curl -X POST http://127.0.0.1:5200/notes `
-  -H "Content-Type: application/json" `
-  -H "Accept: application/json" `
+```bash
+curl -i -H 'Accept: application/json' http://127.0.0.1:5200/notes
+```
+
+### `POST /notes`
+
+- accepts `application/json`
+- accepts `application/x-www-form-urlencoded`
+- fields:
+  - `title`
+  - `content`
+- for `Accept: application/json`, returns the created note as JSON
+- for `Accept: text/html`, returns the created note as HTML
+- expected status: `201 Created`
+
+Example JSON request:
+
+```bash
+curl -X POST http://127.0.0.1:5200/notes \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
   -d '{"title":"Lab","content":"First note"}'
 ```
 
-`GET /notes/{id}`
+### `GET /notes/{id}`
 
-- `Accept: application/json` returns `id`, `title`, `content`, `createdAt`
-- `Accept: text/html` returns an HTML page with `id`, `title`, `created_at`, `content`
+- supports `Accept: application/json`
+- supports `Accept: text/html`
+- for `application/json`, returns `id`, `title`, `content`, `createdAt`
+- for `text/html`, returns an HTML page with note details
+
+Example:
+
+```bash
+curl -i -H 'Accept: application/json' http://127.0.0.1:5200/notes/1
+```
+
+## Deployment Documentation
+
+Main deployment automation script:
+
+- [scripts/install-vm.sh](C:/Users/Admin/Desktop/architecture-lab1/scripts/install-vm.sh)
+
+### Base Virtual Machine Image
+
+The deployment must use an official image:
+
+- `Ubuntu Server 24.04 LTS`
+
+Source:
+
+- the official Ubuntu website for a regular VM
+- the official `Ubuntu` distribution for `WSL`
+
+Which image to download:
+
+- for VirtualBox, VMware, or Hyper-V: the official `Ubuntu Server 24.04 LTS` image
+- for Windows Subsystem for Linux: the official `Ubuntu` distribution
+
+### Virtual Machine Resource Requirements
+
+Recommended minimum:
+
+- CPU: `2 vCPU`
+- RAM: `4 GB`
+- Disk: `20 GB`
+
+### How To Log In To The VM And Which Credentials To Use
+
+Supported login methods:
+
+- `Console`
+- `SSH`
+
+For a regular Ubuntu VM:
+
+- log in with the default user created during Ubuntu installation
+- credentials are defined during OS installation
+
+For WSL:
+
+- open Windows PowerShell
+- run `wsl -d Ubuntu`
+
+After `install-vm.sh` finishes, the default user must be blocked, and login should be performed only with one of these users:
+
+- `student`
+- `teacher`
+- `operator`
+
+Initial password set by the script for these users:
+
+- `12345678`
+
+On first login, the system forces a password change.
+
+For WSL, after deployment the default login user becomes `student` instead of `root`.
+
+### How To Download And Run The Deployment Automation
+
+1. Get the repository code.
+2. Open the Ubuntu VM or WSL.
+3. Go to the repository directory.
+4. Run the script:
+
+```bash
+cd /mnt/c/Users/Admin/Desktop/architecture-lab1
+sudo DEFAULT_VM_USER= MYWEBAPP_DB_PASSWORD=mywebapp ./scripts/install-vm.sh
+```
+
+What the script does:
+
+- in WSL, copies the repository from `/mnt/...` into the Linux filesystem
+- installs `sudo`, `Java 21`, `PostgreSQL`, `Nginx`, `curl`, `unzip`, and `netcat`
+- creates users `student`, `teacher`, `operator`, and `mywebapp`
+- adds `student` and `teacher` to the `sudo` group
+- creates the `mywebapp` database and the `mywebapp` database user
+- builds the application with `./gradlew bootJar`
+- installs `systemd` unit files
+- configures `Nginx`
+- enables socket activation
+- creates `/home/student/gradebook` with the value `21`
+- locks the original default user if it is not `student`, `teacher`, or `operator`
+- locks `root`
+- for WSL, writes `/etc/wsl.conf` so that `student` becomes the default user
+
+For WSL, after the script finishes, restart the distribution from Windows PowerShell:
+
+```powershell
+wsl --shutdown
+```
+
+After the next `wsl -d Ubuntu` start, the session should open as `student`.
+
+### Deployed Runtime Layout
+
+- `Nginx`: `0.0.0.0:80`
+- `PostgreSQL`: `127.0.0.1` on the local PostgreSQL port configured by the system
+- `mywebapp.socket`: `127.0.0.1:5200`
+- Spring Boot backend: `127.0.0.1:15200`
+
+## Deployed System Testing Instructions
+
+The following commands were used to verify that the deployed system was configured correctly.
+
+Check services:
+
+```bash
+systemctl status mywebapp-backend.service mywebapp.socket mywebapp.service nginx postgresql --no-pager
+```
+
+Check listening ports:
+
+```bash
+ss -ltnp | egrep '(:80|:5200|:15200|:5432|:5433)'
+```
+
+Check the main page and business endpoints:
+
+```bash
+curl -i http://127.0.0.1/
+curl -i -H 'Accept: application/json' http://127.0.0.1/notes
+curl -i -X POST http://127.0.0.1/notes \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{"title":"Lab","content":"First note"}'
+curl -i -H 'Accept: application/json' http://127.0.0.1/notes/1
+curl -i http://127.0.0.1:15200/health/alive
+curl -i http://127.0.0.1:15200/health/ready
+```
+
+Check that `/health/alive` is not exposed through external `Nginx`:
+
+```bash
+curl -i http://127.0.0.1/health/alive
+```
+
+Expected result:
+
+- the main page is available through `Nginx`
+- `GET /notes` works
+- note creation works
+- `GET /notes/{id}` works
+- internal health endpoints are available on the backend port
+- `/health/alive` must not be available through external port `80`
+
+Check the gradebook:
+
+```bash
+cat /home/student/gradebook
+```
+
+Expected result:
+
+- the file contains only the value `21`
+
+Check users:
+
+```bash
+id student
+id teacher
+id operator
+id mywebapp
+```
+
+Check operator restrictions:
+
+```bash
+sudo -l -U operator
+```
+
+Check that the default user and `root` are locked:
+
+```bash
+passwd -S root
+grep '^root:' /etc/shadow
+```
+
+If a separate default Ubuntu user exists in a regular VM, also run:
+
+```bash
+sudo passwd -S <default_user>
+sudo grep '^<default_user>:' /etc/shadow
+```
+
+For WSL, verify that the default user is now `student`:
+
+```powershell
+wsl --shutdown
+wsl -d Ubuntu
+```
+
+After login:
+
+```bash
+whoami
+```
+
+Expected result:
+
+- the command returns `student`
+
+## Repository Structure
+
+- [src](C:/Users/Admin/Desktop/architecture-lab1/src)
+- [scripts](C:/Users/Admin/Desktop/architecture-lab1/scripts)
+- [deploy](C:/Users/Admin/Desktop/architecture-lab1/deploy)
+- [docs](C:/Users/Admin/Desktop/architecture-lab1/docs)
