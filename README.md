@@ -78,15 +78,31 @@ Requirements:
 - `PostgreSQL`
 - a Unix-like environment to run `./gradlew`
 
-For quick local PostgreSQL startup on Windows, the repository includes:
+For full containerized startup required by Laboratory Work No. 2, the repository includes:
 
 - [docker-compose.yml](C:/Users/Admin/Desktop/architecture-lab1/docker-compose.yml)
 
-Start the local database:
+Start the full stack:
 
 ```powershell
-docker compose up -d
+docker compose up -d --build
 ```
+
+Services started by compose:
+
+- `postgres`
+- `web`
+- `nginx`
+
+Compose runtime addresses:
+
+- `http://127.0.0.1/` through `nginx`
+- `http://127.0.0.1/swagger-ui.html` through `nginx`
+
+The compose stack uses:
+
+- a dedicated Docker network: `mywebapp-net`
+- a persistent Docker volume: `postgres-data`
 
 Build the application:
 
@@ -109,6 +125,46 @@ Run the application locally:
 Local application address:
 
 - `http://127.0.0.1:5200`
+
+## Docker Compose Run
+
+Build and start the full system:
+
+```powershell
+docker compose up -d --build
+```
+
+Stop the system:
+
+```powershell
+docker compose down
+```
+
+Stop the system and remove the database volume:
+
+```powershell
+docker compose down -v
+```
+
+Check container status:
+
+```powershell
+docker compose ps
+```
+
+Check logs:
+
+```powershell
+docker compose logs -f
+```
+
+After startup, verify:
+
+```powershell
+curl.exe -i http://127.0.0.1/
+curl.exe -i -H "Accept: application/json" http://127.0.0.1/notes
+curl.exe -i http://127.0.0.1/swagger-ui.html
+```
 
 ## How To Run The Developed Web Application
 
@@ -372,13 +428,6 @@ Check that the default user and `root` are locked:
 ```bash
 passwd -S root
 grep '^root:' /etc/shadow
-```
-
-If a separate default Ubuntu user exists in a regular VM, also run:
-
-```bash
-sudo passwd -S <default_user>
-sudo grep '^<default_user>:' /etc/shadow
 ```
 
 For WSL, verify that the default user is now `student`:
