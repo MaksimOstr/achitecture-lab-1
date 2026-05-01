@@ -1,0 +1,17 @@
+FROM gradle:8-jdk21
+
+WORKDIR /workspace
+
+COPY build.gradle settings.gradle gradlew gradlew.bat ./
+COPY gradle ./gradle
+COPY src ./src
+
+RUN gradle --no-daemon bootJar -x test
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
+
+EXPOSE 5200
+
+ENTRYPOINT ["java", "-jar", "/workspace/build/libs/architecture-lab1-0.0.1-SNAPSHOT.jar"]

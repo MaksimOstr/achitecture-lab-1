@@ -134,6 +134,24 @@ Build and start the full system:
 docker compose up -d --build
 ```
 
+Build only the optimized multi-stage backend image:
+
+```powershell
+docker build -t mywebapp:multistage -f Dockerfile .
+```
+
+Build the comparison single-stage backend image:
+
+```powershell
+docker build -t mywebapp:single-stage -f Dockerfile.single-stage .
+```
+
+Compare image sizes:
+
+```powershell
+docker images mywebapp
+```
+
 Stop the system:
 
 ```powershell
