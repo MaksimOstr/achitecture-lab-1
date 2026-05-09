@@ -19,9 +19,8 @@ set -euo pipefail
 : "${GHCR_TOKEN:?GHCR_TOKEN is required}"
 
 # Set up ephemeral SSH key
-mkdir -p ~/.ssh
-chmod 700 ~/.ssh
-printf '%s\n' "${SSH_PRIVATE_KEY}" > ~/.ssh/deploy_key
+install -d -m 700 ~/.ssh
+printf '%s' "${SSH_PRIVATE_KEY}" | tr -d '\r' > ~/.ssh/deploy_key
 chmod 600 ~/.ssh/deploy_key
 
 rssh() {

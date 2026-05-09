@@ -12,9 +12,8 @@ set -euo pipefail
 : "${TARGET_HOST:?TARGET_HOST is required}"
 : "${TARGET_USER:?TARGET_USER is required}"
 
-mkdir -p ~/.ssh
-chmod 700 ~/.ssh
-printf '%s\n' "${SSH_PRIVATE_KEY}" > ~/.ssh/deploy_key
+install -d -m 700 ~/.ssh
+printf '%s' "${SSH_PRIVATE_KEY}" | tr -d '\r' > ~/.ssh/deploy_key
 chmod 600 ~/.ssh/deploy_key
 
 rssh() {
