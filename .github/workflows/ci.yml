@@ -96,10 +96,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Lowercase repo name
+        id: repo
+        run: echo "name=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
       - uses: docker/metadata-action@v5
         id: meta
         with:
-          images: ghcr.io/${{ github.repository }}
+          images: ghcr.io/${{ steps.repo.outputs.name }}
           tags: |
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
             type=sha,prefix=sha-,format=long,enable=${{ github.ref == 'refs/heads/main' }}
@@ -132,7 +136,9 @@ jobs:
           IMAGE: ghcr.io/${{ github.repository }}:${{ github.ref_name }}
           GHCR_USERNAME: ${{ github.actor }}
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: bash scripts/deploy.sh
+        run: |
+          export IMAGE=$(echo "$IMAGE" | tr '[:upper:]' '[:lower:]')
+          bash scripts/deploy.sh
 
   # ── Verify ────────────────────────────────────────────────────────────────────
   verify:
