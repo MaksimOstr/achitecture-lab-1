@@ -165,7 +165,7 @@ POSTGRES_HBA="$(dirname "$POSTGRES_CONF")/pg_hba.conf"
 DB_PORT="$("${AS_POSTGRES[@]}" psql -Atqc "SHOW port;")"
 
 sed -i "s/^#\?listen_addresses.*/listen_addresses = '127.0.0.1'/" "$POSTGRES_CONF"
-if ! grep -q "^host[[:space:]]\+$DB_NAME[[:space:]]\+$DB_USER[[:space:]]\+${DB_HOST}/32[[:space:]]\+scram-sha-256$" "$POSTGRES_HBA"; then
+if ! grep -q "^host[[:space:]]\+${DB_NAME}[[:space:]]\+${DB_USER}[[:space:]]\+${DB_HOST}/32[[:space:]]\+scram-sha-256$" "$POSTGRES_HBA"; then
   printf '\nhost %s %s %s/32 scram-sha-256\n' "$DB_NAME" "$DB_USER" "$DB_HOST" >> "$POSTGRES_HBA"
 fi
 
@@ -221,10 +221,10 @@ fi
 
 nginx -t
 curl --fail --silent http://127.0.0.1/ >/dev/null
-curl --fail --silent http://127.0.0.1/health/alive >/dev/null && {
+if curl --fail --silent http://127.0.0.1/health/alive >/dev/null; then
   echo "Warning: nginx should not expose /health/alive, but it is reachable." >&2
   exit 1
-} || true
+fi
 curl --fail --silent http://127.0.0.1/notes >/dev/null || true
 
 passwd -l root

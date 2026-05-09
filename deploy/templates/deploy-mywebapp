@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Helper script installed on the target node.
+# Called by the runner during CD to update the running image.
+# Usage: deploy-mywebapp <image>
+set -euo pipefail
+
+IMAGE="${1:?Usage: deploy-mywebapp <image>}"
+
+sed -i "s|^MYWEBAPP_IMAGE=.*|MYWEBAPP_IMAGE=${IMAGE}|" /etc/mywebapp/env
+systemctl restart mywebapp
+echo "Restarted mywebapp with image: ${IMAGE}"

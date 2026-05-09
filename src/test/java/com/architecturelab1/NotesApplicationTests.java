@@ -99,6 +99,50 @@ class NotesApplicationTests {
     }
 
     @Test
+    void emptyNotesListReturnsEmptyJsonArray() throws Exception {
+        mockMvc.perform(get("/notes").accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+    }
+
+    @Test
+    void notFoundNoteReturnsJsonError() throws Exception {
+        mockMvc.perform(get("/notes/999").accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.error").value("Note 999 was not found"));
+    }
+
+    @Test
+    void createNoteWithBlankTitleReturnsValidationError() throws Exception {
+        mockMvc.perform(post("/notes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                      "title": "",
+                      "content": "some content"
+                    }
+                    """))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.error").value("Validation failed"));
+    }
+
+    @Test
+    void noteDetailReturnsHtml() throws Exception {
+        mockMvc.perform(post("/notes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content("{\"title\":\"HTML detail\",\"content\":\"Details here\"}"))
+            .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/notes/1").accept(MediaType.TEXT_HTML))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("HTML detail")));
+    }
+
+    @Test
     void swaggerDocsExposeNotesEndpoints() throws Exception {
         mockMvc.perform(get("/v3/api-docs").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
