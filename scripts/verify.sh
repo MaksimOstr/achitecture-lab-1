@@ -59,8 +59,7 @@ check "nginx proxies GET /" \
     rssh curl -sf http://127.0.0.1/ -o /dev/null
 
 check "nginx proxies GET /notes" \
-    rssh curl -sf http://127.0.0.1/notes \
-        -H "Accept: application/json" -o /dev/null
+    rssh curl -sf http://127.0.0.1/notes -o /dev/null
 
 # nginx must NOT expose /health/* (requirement from lab 1)
 HEALTH_STATUS="$(rssh curl -o /dev/null -w '%{http_code}' \
