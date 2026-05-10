@@ -60,7 +60,7 @@ chown "${DEPLOY_USER}:${DEPLOY_USER}" "/home/${DEPLOY_USER}/.ssh/authorized_keys
 
 # Allow deploy user to run the deployment helper as root without a password
 cat > /etc/sudoers.d/deploy-mywebapp <<'EOF'
-deploy ALL=(ALL) NOPASSWD: /usr/local/bin/deploy-mywebapp
+deploy ALL=(ALL) NOPASSWD: /usr/local/bin/deploy-mywebapp, /usr/sbin/nginx
 EOF
 chmod 0440 /etc/sudoers.d/deploy-mywebapp
 

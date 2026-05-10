@@ -19,9 +19,8 @@ set -euo pipefail
 : "${GHCR_TOKEN:?GHCR_TOKEN is required}"
 
 # Set up ephemeral SSH key
-mkdir -p ~/.ssh
-chmod 700 ~/.ssh
-printf '%s\n' "${SSH_PRIVATE_KEY}" > ~/.ssh/deploy_key
+install -d -m 700 ~/.ssh
+printf '%s' "${SSH_PRIVATE_KEY}" | tr -d '\r' > ~/.ssh/deploy_key
 chmod 600 ~/.ssh/deploy_key
 
 rssh() {
@@ -42,7 +41,14 @@ rssh docker pull "${IMAGE}"
 echo "Updating deployment and restarting service..."
 rssh sudo /usr/local/bin/deploy-mywebapp "${IMAGE}"
 
-echo "Waiting for service to become ready..."
-sleep 15
+echo "Waiting for application to become ready (up to 3 minutes)..."
+for i in $(seq 1 36); do
+    if rssh curl -sf http://127.0.0.1:5200/health/alive -o /dev/null 2>/dev/null; then
+        echo "Application is ready (attempt ${i})."
+        break
+    fi
+    echo "Not ready yet, attempt ${i}/36..."
+    sleep 5
+done
 
 echo "Deployment complete."

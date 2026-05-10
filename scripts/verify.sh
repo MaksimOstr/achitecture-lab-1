@@ -12,9 +12,8 @@ set -euo pipefail
 : "${TARGET_HOST:?TARGET_HOST is required}"
 : "${TARGET_USER:?TARGET_USER is required}"
 
-mkdir -p ~/.ssh
-chmod 700 ~/.ssh
-printf '%s\n' "${SSH_PRIVATE_KEY}" > ~/.ssh/deploy_key
+install -d -m 700 ~/.ssh
+printf '%s' "${SSH_PRIVATE_KEY}" | tr -d '\r' > ~/.ssh/deploy_key
 chmod 600 ~/.ssh/deploy_key
 
 rssh() {
@@ -59,8 +58,7 @@ check "nginx proxies GET /" \
     rssh curl -sf http://127.0.0.1/ -o /dev/null
 
 check "nginx proxies GET /notes" \
-    rssh curl -sf http://127.0.0.1/notes \
-        -H "Accept: application/json" -o /dev/null
+    rssh curl -sf http://127.0.0.1/notes -o /dev/null
 
 # nginx must NOT expose /health/* (requirement from lab 1)
 HEALTH_STATUS="$(rssh curl -o /dev/null -w '%{http_code}' \
