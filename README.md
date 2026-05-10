@@ -1,5 +1,9 @@
 # mywebapp
 
+## CI/CD
+
+Automated pipeline: lint → test (≥40% coverage) → build Docker image → deploy → verify.
+
 ## Documentation
 
 This repository contains the implementation and documentation for the laboratory assignment on automated deployment of a web application to Ubuntu/WSL.
