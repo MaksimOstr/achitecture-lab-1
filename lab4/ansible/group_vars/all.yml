@@ -1,0 +1,22 @@
+---
+gradebook_n: 21
+lab_default_password: "12345678"
+
+app_name: mywebapp
+app_system_user: app
+app_root: /opt/mywebapp
+app_current_dir: /opt/mywebapp/current
+app_config_dir: /etc/mywebapp
+app_log_dir: /var/log/mywebapp
+app_port: 5200
+app_bind_address: 127.0.0.1
+app_jar_path: "{{ playbook_dir }}/../../build/libs/mywebapp-0.0.1-SNAPSHOT.jar"
+
+db_name: mywebapp
+db_user: mywebapp
+db_password: mywebapp
+db_port: 5432
+db_host: "{{ hostvars[groups['db'][0]].ansible_host }}"
+worker_host: "{{ hostvars[groups['workers'][0]].ansible_host }}"
+postgresql_version: "16"
+postgresql_conf_dir: "/etc/postgresql/{{ postgresql_version }}/main"

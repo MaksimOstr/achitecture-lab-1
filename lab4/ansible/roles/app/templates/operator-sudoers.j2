@@ -1,0 +1,2 @@
+Cmnd_Alias MYWEBAPP_CMDS = /usr/local/bin/mywebappctl start, /usr/local/bin/mywebappctl stop, /usr/local/bin/mywebappctl restart, /usr/local/bin/mywebappctl status
+operator ALL=(root) NOPASSWD: MYWEBAPP_CMDS, /usr/bin/systemctl reload nginx

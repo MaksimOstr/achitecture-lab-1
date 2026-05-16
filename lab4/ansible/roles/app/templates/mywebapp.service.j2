@@ -1,0 +1,21 @@
+[Unit]
+Description={{ app_name }} Spring Boot application
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User={{ app_system_user }}
+Group={{ app_system_user }}
+WorkingDirectory={{ app_current_dir }}
+ExecStart=/usr/bin/java -jar {{ app_current_dir }}/mywebapp.jar --spring.config.additional-location=file:{{ app_config_dir }}/config.yaml
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths={{ app_log_dir }}
+
+[Install]
+WantedBy=multi-user.target

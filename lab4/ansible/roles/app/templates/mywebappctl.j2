@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+case "${1:-}" in
+  start)
+    systemctl start mywebapp
+    ;;
+  stop)
+    systemctl stop mywebapp
+    ;;
+  restart)
+    systemctl restart mywebapp
+    ;;
+  status)
+    systemctl status mywebapp --no-pager
+    ;;
+  *)
+    echo "Usage: mywebappctl {start|stop|restart|status}" >&2
+    exit 1
+    ;;
+esac

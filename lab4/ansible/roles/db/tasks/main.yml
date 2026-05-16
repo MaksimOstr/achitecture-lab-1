@@ -1,0 +1,73 @@
+---
+- name: Install PostgreSQL packages
+  ansible.builtin.apt:
+    name:
+      - postgresql
+      - postgresql-client
+      - python3-psycopg2
+      - ufw
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Configure PostgreSQL listen address
+  ansible.builtin.lineinfile:
+    path: "{{ postgresql_conf_dir }}/postgresql.conf"
+    regexp: "^#?listen_addresses\\s*="
+    line: "listen_addresses = '*'"
+    owner: postgres
+    group: postgres
+    mode: "0644"
+  notify: Restart PostgreSQL
+
+- name: Allow application database access only from worker
+  ansible.builtin.lineinfile:
+    path: "{{ postgresql_conf_dir }}/pg_hba.conf"
+    regexp: "^host\\s+{{ db_name }}\\s+{{ db_user }}\\s+{{ worker_host }}/32\\s+scram-sha-256$"
+    line: "host {{ db_name }} {{ db_user }} {{ worker_host }}/32 scram-sha-256"
+    owner: postgres
+    group: postgres
+    mode: "0640"
+  notify: Restart PostgreSQL
+
+- name: Flush PostgreSQL config changes before database creation
+  ansible.builtin.meta: flush_handlers
+
+- name: Ensure PostgreSQL service is enabled and running
+  ansible.builtin.systemd:
+    name: postgresql
+    enabled: true
+    state: started
+
+- name: Ensure application database user exists
+  community.postgresql.postgresql_user:
+    name: "{{ db_user }}"
+    password: "{{ db_password }}"
+    role_attr_flags: LOGIN
+    state: present
+  become_user: postgres
+
+- name: Ensure application database exists
+  community.postgresql.postgresql_db:
+    name: "{{ db_name }}"
+    owner: "{{ db_user }}"
+    state: present
+  become_user: postgres
+
+- name: Allow SSH through UFW
+  community.general.ufw:
+    rule: allow
+    name: OpenSSH
+
+- name: Allow PostgreSQL only from worker VM
+  community.general.ufw:
+    rule: allow
+    from_ip: "{{ worker_host }}"
+    to_port: "{{ db_port }}"
+    proto: tcp
+
+- name: Enable UFW with default deny incoming policy
+  community.general.ufw:
+    state: enabled
+    direction: incoming
+    policy: deny

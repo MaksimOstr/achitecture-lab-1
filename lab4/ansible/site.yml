@@ -1,0 +1,19 @@
+---
+- name: Configure common VM users and gradebook
+  hosts: all
+  become: true
+  roles:
+    - common
+
+- name: Configure PostgreSQL database VM
+  hosts: db
+  become: true
+  roles:
+    - db
+
+- name: Configure worker VM application and reverse proxy
+  hosts: workers
+  become: true
+  roles:
+    - app
+    - nginx

@@ -1,0 +1,48 @@
+---
+- name: Install common packages
+  ansible.builtin.apt:
+    name:
+      - sudo
+      - curl
+      - python3
+      - acl
+      - openssh-server
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Allow SSH key and password authentication
+  ansible.builtin.copy:
+    dest: /etc/ssh/sshd_config.d/99-lab4-auth.conf
+    content: |
+      PubkeyAuthentication yes
+      PasswordAuthentication yes
+      PermitRootLogin no
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart SSH
+
+- name: Ensure student user exists for gradebook path
+  ansible.builtin.user:
+    name: student
+    shell: /bin/bash
+    create_home: true
+    password: "{{ lab_default_password | password_hash('sha512', 'lab4student') }}"
+
+- name: Ensure teacher user exists
+  ansible.builtin.user:
+    name: teacher
+    shell: /bin/bash
+    groups: sudo
+    append: true
+    create_home: true
+    password: "{{ lab_default_password | password_hash('sha512', 'lab4teacher') }}"
+
+- name: Create gradebook file
+  ansible.builtin.copy:
+    dest: /home/student/gradebook
+    content: "{{ gradebook_n }}\n"
+    owner: student
+    group: student
+    mode: "0644"
