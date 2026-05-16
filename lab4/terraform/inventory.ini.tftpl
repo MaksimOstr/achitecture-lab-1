@@ -1,0 +1,12 @@
+[workers]
+worker ansible_host=${worker_ip}
+
+[db]
+db ansible_host=${db_ip}
+
+[all:vars]
+ansible_user=ansible
+ansible_ssh_private_key_file=${ssh_private_key_path}
+ansible_python_interpreter=/usr/bin/python3
+worker_ip=${worker_ip}
+db_ip=${db_ip}

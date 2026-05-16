@@ -1,0 +1,25 @@
+#cloud-config
+hostname: ${hostname}
+manage_etc_hosts: true
+
+users:
+  - name: ansible
+    gecos: Ansible automation user
+    groups: sudo
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: true
+    ssh_authorized_keys:
+      - ${ansible_ssh_public_key}
+
+ssh_pwauth: true
+disable_root: true
+
+package_update: true
+packages:
+  - python3
+  - sudo
+  - openssh-server
+
+runcmd:
+  - [ systemctl, enable, --now, ssh ]

@@ -1,0 +1,11 @@
+# Path to an official Ubuntu 24.04 cloud image, for example:
+# https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
+ubuntu_cloud_image_path = "/var/lib/libvirt/images/noble-server-cloudimg-amd64.img"
+
+ssh_public_key_path  = "~/.ssh/id_ed25519.pub"
+ssh_private_key_path = "~/.ssh/id_ed25519"
+
+# Optional overrides:
+# network_cidr     = "192.168.124.0/24"
+# worker_memory_mb = 2048
+# db_memory_mb     = 2048
