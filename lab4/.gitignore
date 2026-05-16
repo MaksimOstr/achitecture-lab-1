@@ -1,0 +1,5 @@
+terraform/.terraform/
+terraform/terraform.tfstate
+terraform/terraform.tfstate.*
+terraform/tfplan
+ansible/inventory/hosts.ini
